@@ -4,7 +4,12 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            DisplayWelcomeMessage();
+        }
+        public static void DisplayWelcomeMessage()
+        {
+            Console.WriteLine("Welcome To Airline Reservation System");
         }
     }
+
 }
