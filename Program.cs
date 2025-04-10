@@ -28,13 +28,17 @@
                 case 3:
                     break;
                 case 4:
+                    ExitApplication();
                     break;
                 default:
                     Console.WriteLine("Invalid Option");
                     break;
             }
             return choice;
-
+        }
+        public static void ExitApplication()
+        {
+            Console.WriteLine("Thank you for using Airline Reservation");
         }
     }
 
