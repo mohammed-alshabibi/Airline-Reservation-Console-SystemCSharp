@@ -65,6 +65,17 @@
                 Console.WriteLine("There is not space for add more flight ");
             }
         }
+        public static void DisplayAllFlights()
+        {
+            for (int i = 0; i < FlightCounter; i++)
+            {
+                Console.WriteLine("Flight code " + flightCodeArray[i]);
+                Console.WriteLine("From City is" + fromCityArray[i]);
+                Console.WriteLine("To city is " + toCityArray[i]);
+                Console.WriteLine("Departure Time " + departureTimeArray[i]);
+                Console.WriteLine("Duration time is " + durationArray[i]);
+            }
+        }
     }
 
 }
