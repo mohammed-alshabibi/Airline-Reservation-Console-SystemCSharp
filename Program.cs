@@ -9,6 +9,7 @@
         static int[] durationArray = new int[100];
         static int FlightCounter = 0;
         static string[] passengerNameArray = new string[100];
+        static string[] GenerateBookingIDArray = new string[100];
         static void Main(string[] args)
         {
             DisplayWelcomeMessage();
@@ -114,7 +115,8 @@
                     case 1:
                         Console.WriteLine("Enter Passenger Name:");
                         string passengerName = Console.ReadLine();
-                        BookFlight(passengerName);
+                        string generatedPassengerNamed=GenerateBookingID(passengerName);
+                        BookFlight(generatedPassengerNamed);
                         break;
                     case 2:
                         string passengerToCancel;
@@ -167,11 +169,8 @@
             }
             for (int i = 0; i < FlightCounter; i++)
             {
-                Console.WriteLine("Flight code " + flightCodeArray[i]);
-                Console.WriteLine("From City is" + fromCityArray[i]);
-                Console.WriteLine("To city is " + toCityArray[i]);
-                Console.WriteLine("Departure Time " + departureTimeArray[i]);
-                Console.WriteLine("Duration time is " + durationArray[i]);
+                Console.WriteLine($"Flight Code {flightCodeArray[i]}, From {fromCityArray[i]}, To {toCityArray[i]}, Departure Time is {departureTimeArray[i]}, Duration time is {durationArray[i]} ");
+                Console.WriteLine("-------------------------------------------------");
             }
         }
         public static bool FindFilghtByCode(string flightCode)
@@ -197,10 +196,25 @@
         {
             Console.WriteLine("Enter Booking ID:");
             string bookingID = Console.ReadLine();
-            Console.WriteLine("Enter Passenger Name:");
-            passengerName = Console.ReadLine();
-            return passengerName;
+
+            for (int i = 0; i < FlightCounter; i++)
+            {
+                // Check if the booking ID matches the generated ID for the passenger
+                if (passengerNameArray[i] != null && GenerateBookingIDArray[i].Contains(bookingID))
+                {
+                    passengerName = passengerNameArray[i];
+                    passengerNameArray[i] = null; // Remove the booking
+                    Console.WriteLine("Booking canceled successfully.");
+                    return passengerName;
+                }
+            }
+
+            Console.WriteLine("Booking ID not found.");
+            passengerName = null;
+            return null;
         }
+
+       
         public static void BookFlight( string passengerName, string flightCode = "Default001")
         {
             Console.WriteLine("Enter Fight code:");
@@ -210,6 +224,8 @@
                 if (flightCodeArray[i] == flightCode)
                 {
                     passengerNameArray[i] = passengerName;
+                    GenerateBookingIDArray[i]= GenerateBookingID(passengerName);
+                    Console.WriteLine("Booking ID: " + GenerateBookingIDArray[i]);
                     Console.WriteLine("Flight booked successfully");
                     return;
                 }
@@ -227,11 +243,12 @@
             }
             return false;
         }
-        public static void GenerateBookingID(string passengerName)
+        public static string GenerateBookingID(string passengerName)
         {
             Random random = new Random();
-            int bookingID = random.Next(1000, 9999);
-            Console.WriteLine("Booking ID is " + passengerName + bookingID);
+            int bookingIDrandom = random.Next(1000, 9999);
+            string bookingID = passengerName + bookingIDrandom.ToString();
+            return bookingID ;
         }
         public static void DisplayFlightDetails(string flightCode)
         {
