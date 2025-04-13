@@ -63,7 +63,7 @@
                         string toCity = Console.ReadLine();
                         Console.WriteLine("Add Departure Time (e.g., 2024-04-10 12:03):");
                         DateTime departureTime = DateTime.Parse(Console.ReadLine());
-                        Console.WriteLine("Add Duration (in minutes):");
+                        Console.WriteLine("Add Duration (in hours):");
                         int duration = int.Parse(Console.ReadLine());
                         AddFlight(flightCode, fromCity, toCity, departureTime, duration);
                         break;
@@ -107,7 +107,8 @@
                 Console.WriteLine("1. Book Flight");
                 Console.WriteLine("2. Cancel Flight Booking");
                 Console.WriteLine("3. View Flights");
-                Console.WriteLine("4. Exit to Main Menu");
+                Console.WriteLine("4. Search Bookings by Destination");
+                Console.WriteLine("5. Exit to Main Menu");
                 int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
@@ -127,6 +128,10 @@
                         DisplayAllFlights();
                         break;
                     case 4:
+                        Console.WriteLine("Enter Destination City:");
+                        string toCity = Console.ReadLine();
+                        SearchBookingsByDestination(toCity);
+
                         return;
                     default:
                         Console.WriteLine("Invalid Option. Please try again.");
@@ -194,24 +199,32 @@
         }
         public static string CancelFlightBooking(out string passengerName)
         {
-            Console.WriteLine("Enter Booking ID:");
-            string bookingID = Console.ReadLine();
-
-            for (int i = 0; i < FlightCounter; i++)
+            if(ConfirmAction("Cancel Booking"))
             {
-                // Check if the booking ID matches the generated ID for the passenger
-                if (passengerNameArray[i] != null && GenerateBookingIDArray[i].Contains(bookingID))
-                {
-                    passengerName = passengerNameArray[i];
-                    passengerNameArray[i] = null; // Remove the booking
-                    Console.WriteLine("Booking canceled successfully.");
-                    return passengerName;
-                }
-            }
+                Console.WriteLine("Enter Booking ID:");
+                string bookingID = Console.ReadLine();
 
-            Console.WriteLine("Booking ID not found.");
+                for (int i = 0; i < FlightCounter; i++)
+                {
+                    // Check if the booking ID matches the generated ID for the passenger
+                    if (passengerNameArray[i] != null && GenerateBookingIDArray[i].Contains(bookingID))
+                    {
+                        passengerName = passengerNameArray[i];
+                        passengerNameArray[i] = null; // Remove the booking
+                        Console.WriteLine("Booking canceled successfully.");
+                        return passengerName;
+                    }
+                }
+                Console.WriteLine("Booking ID not found.");
+                
+            }
+            else
+            {
+                Console.WriteLine("No Cancelation");
+            }
             passengerName = null;
             return null;
+
         }
 
        
