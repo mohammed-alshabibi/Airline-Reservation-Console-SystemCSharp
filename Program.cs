@@ -10,6 +10,8 @@
         static int FlightCounter = 0;
         static string[] passengerNameArray = new string[100];
         static string[] GenerateBookingIDArray = new string[100];
+        static int[] basePriceArray = new int[100];
+
         static void Main(string[] args)
         {
             DisplayWelcomeMessage();
@@ -55,17 +57,27 @@
                 switch (choice)
                 {
                     case 1:
-                        Console.WriteLine("Add Flight code:");
-                        string flightCode = Console.ReadLine();
-                        Console.WriteLine("Add From city:");
-                        string fromCity = Console.ReadLine();
-                        Console.WriteLine("Add To city:");
-                        string toCity = Console.ReadLine();
-                        Console.WriteLine("Add Departure Time (e.g., 2024-04-10 12:03):");
-                        DateTime departureTime = DateTime.Parse(Console.ReadLine());
-                        Console.WriteLine("Add Duration (in hours):");
-                        int duration = int.Parse(Console.ReadLine());
-                        AddFlight(flightCode, fromCity, toCity, departureTime, duration);
+                        try
+                        {
+                            Console.WriteLine("Add Flight code:");
+                            string flightCode = Console.ReadLine();
+                            Console.WriteLine("Add From city:");
+                            string fromCity = Console.ReadLine();
+                            Console.WriteLine("Add To city:");
+                            string toCity = Console.ReadLine();
+                            Console.WriteLine("Add Departure Time (e.g., 2024-04-10 12:03):");
+                            DateTime departureTime = DateTime.Parse(Console.ReadLine());
+                            Console.WriteLine("Add Duration (in hours):");
+                            int duration = int.Parse(Console.ReadLine());
+                            Console.WriteLine("Enter Base Price for the Flight:");
+                            int basePrice = int.Parse(Console.ReadLine());
+                            AddFlight(flightCode, fromCity, toCity, departureTime, duration, basePrice);
+                            
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine($"{ex.Message}");
+                        }
                         break;
                     case 2:
                         DisplayAllFlights();
@@ -148,7 +160,7 @@
         {
             Console.WriteLine("Thank you for using Airline Reservation");
         }
-        public static void AddFlight(string flightCode, string fromCity, string toCity, DateTime departureTime, int duration)
+        public static void AddFlight(string flightCode, string fromCity, string toCity, DateTime departureTime, int duration, int basePrice)
         {
             if(FlightCounter < 100)
             {
@@ -157,6 +169,7 @@
                 toCityArray[FlightCounter] = toCity;
                 departureTimeArray[FlightCounter] = departureTime;
                 durationArray[FlightCounter]= duration;
+                basePriceArray[FlightCounter]= basePrice;
                 FlightCounter++;
                 Console.WriteLine("Flight added successfully.");
             }
@@ -226,24 +239,46 @@
             return null;
 
         }
-
-       
-        public static void BookFlight( string passengerName, string flightCode = "Default001")
+        public static void BookFlight(string passengerName, string flightCode = "Default001")
         {
-            Console.WriteLine("Enter Fight code:");
+            Console.WriteLine("Enter Flight Code:");
             flightCode = Console.ReadLine();
+
             for (int i = 0; i < FlightCounter; i++)
             {
                 if (flightCodeArray[i] == flightCode)
                 {
+                    int basePrice = basePriceArray[i];
+
+                    Console.WriteLine("Enter Number of Tickets:");
+                    int numTickets = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Do you have a discount? (yes/no):");
+                    string hasDiscount = Console.ReadLine().ToLower();
+
+                    double totalFare;
+                    if (hasDiscount == "yes")
+                    {
+                        Console.WriteLine("Enter Discount Percentage:");
+                        int discount = int.Parse(Console.ReadLine());
+                        totalFare = CalculateFare(basePrice, numTickets, discount);
+                    }
+                    else
+                    {
+                        totalFare = CalculateFare(basePrice, numTickets);
+                    }
+
                     passengerNameArray[i] = passengerName;
-                    GenerateBookingIDArray[i]= GenerateBookingID(passengerName);
-                    Console.WriteLine("Booking ID: " + GenerateBookingIDArray[i]);
-                    Console.WriteLine("Flight booked successfully");
+                    GenerateBookingIDArray[i] = GenerateBookingID(passengerName);
+
+                    Console.WriteLine($"Booking ID: {GenerateBookingIDArray[i]}");
+                    Console.WriteLine($"Total Fare: {totalFare:C}");
+                    Console.WriteLine("Flight booked successfully.");
                     return;
                 }
             }
-            Console.WriteLine("Flight not found");
+
+            Console.WriteLine("Flight not found.");
         }
         public static bool ValidateFlightCode(string flightCode)
         {
