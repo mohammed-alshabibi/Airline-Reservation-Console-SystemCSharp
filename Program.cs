@@ -143,7 +143,8 @@
                         Console.WriteLine("Enter Destination City:");
                         string toCity = Console.ReadLine();
                         SearchBookingsByDestination(toCity);
-
+                        break;
+                        case 5:
                         return;
                     default:
                         Console.WriteLine("Invalid Option. Please try again.");
